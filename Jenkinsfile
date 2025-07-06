@@ -34,15 +34,15 @@ pipeline {
         }
 
         stage('Health Checks') {
-            steps {
-                echo '✅ Checking service health...'
-                sh '''
-                    curl -f http://localhost:5000 || (echo "❌ Flask app failed" && exit 1)
-                    curl -f http://localhost:3000 || (echo "❌ Grafana failed" && exit 1)
-                    curl -f http://localhost:9090 || (echo "❌ Prometheus failed" && exit 1)
-                '''
-            }
-        }
+    m      steps {
+               echo '✅ Checking service health...'
+               sh '''
+                   docker-compose exec -T app curl -f http://localhost:5000 || (echo "❌ Flask app failed" && exit 1)
+                   docker-compose exec -T grafana curl -f http://localhost:3000 || (echo "❌ Grafana failed" && exit 1)
+                   docker-compose exec -T prometheus curl -f http://localhost:9090 || (echo "❌ Prometheus failed" && exit 1)
+                 '''
+     }
+  }
 
         stage('Run Tests') {
             when {
