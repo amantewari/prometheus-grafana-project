@@ -37,4 +37,35 @@ pipeline {
             steps {
                 echo '✅ Checking service health...'
                 sh '''
-                    curl
+                    curl -f http://localhost:5000 || (echo "❌ Flask app failed" && exit 1)
+                    curl -f http://localhost:3000 || (echo "❌ Grafana failed" && exit 1)
+                    curl -f http://localhost:9090 || (echo "❌ Prometheus failed" && exit 1)
+                '''
+            }
+        }
+
+        stage('Run Tests') {
+            when {
+                expression { fileExists('test.sh') }
+            }
+            steps {
+                echo '🧪 Running app tests...'
+                sh './test.sh'
+            }
+        }
+
+        stage('Teardown') {
+            steps {
+                echo '🧹 Stopping and removing containers...'
+                sh 'docker-compose down'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo '🧽 Clean up any remaining containers or volumes...'
+            sh 'docker-compose down -v'
+        }
+    }
+}
