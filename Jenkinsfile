@@ -29,7 +29,7 @@ pipeline {
         stage('Wait for Services to Start') {
             steps {
                 echo '⏳ Giving services time to initialize...'
-                sh 'sleep 15'
+                sh 'sleep 60'
             }
         }
 
@@ -43,6 +43,13 @@ pipeline {
                  '''
      }
   }
+
+        stage('App Logs') {
+          steps {
+             echo '📋 App container logs:'
+             sh 'docker-compose logs app || true'
+    }
+}
 
         stage('Run Tests') {
             when {
