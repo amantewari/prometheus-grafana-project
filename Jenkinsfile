@@ -34,7 +34,7 @@ pipeline {
         }
 
         stage('Health Checks') {
-    m      steps {
+            steps {
                echo '✅ Checking service health...'
                sh '''
                    docker-compose exec -T app curl -f http://localhost:5000 || (echo "❌ Flask app failed" && exit 1)
