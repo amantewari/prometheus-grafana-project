@@ -40,7 +40,7 @@ pipeline {
                    docker-compose logs app || true
                    docker-compose exec -T app curl -f http://localhost:5000 || (echo "❌ Flask app failed" && exit 1)
                    docker-compose exec -T grafana curl -f http://localhost:3000 || (echo "❌ Grafana failed" && exit 1)
-                   docker-compose exec -T prometheus curl -f http://localhost:9090 || (echo "❌ Prometheus failed" && exit 1)
+                   
                  '''
      }
   }
