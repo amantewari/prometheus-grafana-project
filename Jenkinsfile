@@ -29,7 +29,7 @@ pipeline {
         stage('Wait for Services to Start') {
             steps {
                 echo '⏳ Giving services time to initialize...'
-                sh 'sleep 60'
+                sh 'sleep 15'
             }
         }
 
@@ -37,6 +37,7 @@ pipeline {
             steps {
                echo '✅ Checking service health...'
                sh '''
+                   sh 'docker-compose logs app || true'
                    docker-compose exec -T app curl -f http://localhost:5000 || (echo "❌ Flask app failed" && exit 1)
                    docker-compose exec -T grafana curl -f http://localhost:3000 || (echo "❌ Grafana failed" && exit 1)
                    docker-compose exec -T prometheus curl -f http://localhost:9090 || (echo "❌ Prometheus failed" && exit 1)
